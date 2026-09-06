@@ -1,50 +1,8 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import SiteLayout from '../layouts/SiteLayout.astro';
 ---
-
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<SiteLayout title="Agoca Labs — AI for the everyday" description="Personal AI automation from Agoca Labs. Thoughtful email summaries, clear priorities, and workflows that fit your day.">
+<section class="hero wrap"><p class="eyebrow">INDEPENDENT AI & AUTOMATION</p><h1>Less busywork.<br /><span>More headspace.</span></h1><div class="hero-bottom"><p>Practical AI for the things that fill your day. Agoca Labs connects familiar tools to turn information into something you can act on.</p><a class="button" href="#work">Explore the work ↗</a></div></section>
+<section class="work wrap" id="work"><div class="section-heading"><p class="eyebrow">CURRENT PROJECT</p><h2>A calmer way to<br />start the morning.</h2></div><div class="project-grid"><article class="project"><p class="project-number">01 / MORNING BRIEF</p><h3>Your inbox, with perspective.</h3><p>The Email Manager reads selected Gmail messages, applies your classification rules, and delivers a concise brief to Telegram. Important requests and useful updates get a place in your day.</p><ul class="tags" aria-label="Connected services"><li>Gmail</li><li>Google Sheets</li><li>Telegram</li></ul></article><article class="project"><p class="project-number">02 / RULES THAT ADAPT</p><h3>Make it work your way.</h3><p>Use Telegram to discuss how messages should be categorized. Confirmed rule changes are saved in Google Sheets and used by future briefs, so your preferences guide the workflow.</p><p class="project-note">Your rules. Your priorities.</p></article></div><p class="scope-note">Currently a personal automation project operated by Agoca. Public account registration is not available.</p></section>
+<section class="principles wrap"><p class="eyebrow">THE APPROACH</p><div><h2>Useful by design.<br />Clear about data.</h2><p>Email analysis runs on locally hosted AI models. Google provides the connected email and spreadsheets; Telegram delivers briefs and handles conversations. The privacy policy explains where information goes and how it is retained.</p><a href="/privacy/">Read the privacy policy ↗</a></div></section>
+</SiteLayout>
