@@ -1,5 +1,6 @@
 const ORIGIN = 'https://delicacy-regime-herbs.ngrok-free.dev/webhook/tiktok-approved-media';
-const MAX_BYTES = 64 * 1024 * 1024;
+// Approved Spanish masters can exceed 64 MiB. Stream them while retaining a finite limit.
+const MAX_BYTES = 128 * 1024 * 1024;
 const securityHeaders = {
   'Cache-Control': 'private, no-store, max-age=0',
   'CDN-Cache-Control': 'no-store',

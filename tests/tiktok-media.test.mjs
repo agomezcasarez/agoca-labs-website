@@ -8,6 +8,22 @@ test('only a fixed upstream is used; cookies and authorization are not forwarded
 test('invalid tickets and query overrides never contact the origin',async()=>{for(const value of [undefined,'../secrets','http://evil','a'.repeat(63),'A'.repeat(64)])assert.equal((await serveTikTokMedia(request(),value,()=>{throw Error('should not fetch');})).status,404);assert.equal((await serveTikTokMedia(request('GET',{},'?url=https://evil'),ticket)).status,404);});
 test('unsupported methods and invalid ranges never contact origin',async()=>{assert.equal((await serveTikTokMedia(request('POST'),ticket)).status,405);assert.equal((await serveTikTokMedia(request('GET',{Range:'bytes=0-1,3-4'}),ticket)).status,416);});
 test('HEAD uses the fixed HEAD endpoint and has no body',async()=>{const r=await serveTikTokMedia(request('HEAD'),ticket,async(url,init)=>{assert.ok(url.includes('tiktok-approved-media-head?'));assert.equal(init.method,'HEAD');return new Response(null,{headers:{'Content-Type':'video/mp4','Content-Length':'42'}});});assert.equal(r.status,200);assert.equal(r.headers.get('Content-Length'),'42');assert.equal(await r.text(),'');});
+
+test('approved 75 MB Spanish master passes HEAD and byte-range validation',async()=>{
+ const size=75264834;
+ const head=await serveTikTokMedia(request('HEAD'),ticket,async()=>new Response(null,{headers:{'Content-Type':'video/mp4','Content-Length':String(size)}}));
+ assert.equal(head.status,200);assert.equal(head.headers.get('Content-Length'),String(size));
+ const range=await serveTikTokMedia(request('GET',{Range:'bytes=0-3'}),ticket,async()=>good(206,{'Content-Range':'bytes 0-3/'+size}));
+ assert.equal(range.status,206);assert.equal(await range.text(),'test');
+});
+
+test('files above 128 MiB remain blocked for HEAD and range requests',async()=>{
+ const tooLarge=128*1024*1024+1;
+ const head=await serveTikTokMedia(request('HEAD'),ticket,async()=>new Response(null,{headers:{'Content-Type':'video/mp4','Content-Length':String(tooLarge)}}));
+ assert.equal(head.status,502);
+ const range=await serveTikTokMedia(request('GET',{Range:'bytes=0-3'}),ticket,async()=>good(206,{'Content-Range':'bytes 0-3/'+tooLarge}));
+ assert.equal(range.status,502);
+});
 test('partial bytes preserve correct range headers',async()=>{const r=await serveTikTokMedia(request('GET',{Range:'bytes=1-4'}),ticket,async(url,init)=>{assert.equal(init.headers.Range,'bytes=1-4');return good(206,{'Content-Range':'bytes 1-4/10'});});assert.equal(r.status,206);assert.equal(r.headers.get('Content-Range'),'bytes 1-4/10');});
 test('upstream redirect is never followed or exposed',async()=>{const r=await serveTikTokMedia(request(),ticket,async()=>new Response(null,{status:302,headers:{Location:'https://evil'}}));assert.equal(r.status,502);assert.equal(r.headers.get('Location'),null);});
 test('upstream HTML, missing length, oversized output and invalid range are rejected',async()=>{for(const response of [new Response('login',{headers:{'Content-Type':'text/html'}}),good(200,{'Content-Length':''}),good(200,{'Content-Length':'999999999'}),good(206,{'Content-Range':'bytes 0-99/100'})])assert.equal((await serveTikTokMedia(request(),ticket,async()=>response)).status,502);});
